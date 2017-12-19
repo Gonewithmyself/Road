@@ -90,11 +90,29 @@ void heapsort(int a[], int n)
 	}
 }
 
+void inset_sort(int a[], int n)
+{
+	int i, j;
+	for ( int j = 1; j < n ; j++){
+		int temp = a[j];
+		for( i = j ; i > 0 ; i --)
+		{
+			if (a[i-1] > temp){
+				a[i] = a[i-1];
+			}
+			else{
+				break;
+			}
+		}
+		a[i] = temp;
+	}
+}
+
 int main(){
 	int src[MAX_SIZE];
 	set_all(src, MAX_SIZE);
 	
-	heapsort(src, MAX_SIZE);
+	inset_sort(src, MAX_SIZE);
 	
 	sorted(src, MAX_SIZE);
 	print(src, MAX_SIZE);
