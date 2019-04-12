@@ -97,13 +97,13 @@ def copy():
 
     auth['host'] = '192.168.15.93'
     dst = Mongo(auth, db='s1001')
-    # cols = src.list_collection()
-    # for col in cols:
-    #     docs = src.find(col)
-    #     if not docs:
-    #         print("no data in", col)
-    #         continue
-    #     dst.insert_many(docs, col)
+    cols = src.list_collection()
+    for col in cols:
+        docs = src.find(col)
+        if not docs:
+            print("no data in", col)
+            continue
+        dst.insert_many(docs, col)
     
     w = FsWriter()
     for col in src.list_gridfs():
@@ -111,9 +111,7 @@ def copy():
         if not data:
             print('none gridfs', col)
             continue
-        print(type(data))
         w.write(col, data)
-        break
         
 
 

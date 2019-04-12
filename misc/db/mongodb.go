@@ -2,6 +2,7 @@ package db
 
 import "C"
 import (
+	"encoding/json"
 	"fmt"
 	"runtime/debug"
 	"sync"
@@ -119,12 +120,32 @@ func CopySession() *mgo.Session {
 	return gMgoSession.Copy()
 }
 
-//export add
-func add(x, y C.int) C.int {
-	return x + y
+type user struct {
+	Id   int32
+	Name string
 }
 
-//export hello
-func hello(x, y *C.char) {
-	fmt.Println("go hello", C.GoString(x), C.GoString(y))
+func Find(c, query string) {
+
+	dd := []byte(query)
+
+	var dst map[string]interface{}
+	json.Unmarshal(dd, &dst)
+
+	m := 0 // dst.Data.(map[string]interface{})
+	fmt.Println(dst, m)
+
+	var res []interface{}
+	gMgoSession.DB("s1001").C(c).Find(dst).All(&res)
+	data, _ := json.Marshal(res)
+	fmt.Println(string(data))
+
 }
+
+func init() {
+	dbname, host, username, psw :=
+		C.CString("s1001"), C.CString("192.168.15.93:27017"), C.CString("test"), C.CString("123456")
+	InitSession(dbname, host, username, psw)
+}
+
+// gMgoSession.DB("ss").C("").Find
