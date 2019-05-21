@@ -1,2 +1,3 @@
 gameclient
 .vscode
+*.pyc
