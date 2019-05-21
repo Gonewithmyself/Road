@@ -13,7 +13,7 @@ import (
 
 var gMgoSession *mgo.Session
 
-var dbName string
+var dbName, ghost string
 var o sync.Once
 
 type Auth struct {
@@ -61,12 +61,12 @@ func doInitSession(dbname, host, username, password, rs, source string) {
 		fmt.Println("reset mongo session", "error", err, dbname, host, username, password)
 		return
 	}
-
-	gMgoSession.SetMode(mgo.Strong, true)
+	ghost = host
+	gMgoSession.SetMode(mgo.Eventual, true)
 }
 
 func CopySession(auth *Auth) *mgo.Session {
-	if dbName != auth.Db {
+	if dbName != auth.Db || ghost != auth.Host {
 		doInitSession(auth.Db, auth.Host,
 			auth.User, auth.Psw, auth.Rs, auth.Source)
 		// fmt.Println(gMgoSession.DatabaseNames())
