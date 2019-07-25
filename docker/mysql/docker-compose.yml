@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  jenkins:
+    container_name:
+      mysql 
+    image:
+      mysql
+    restart:
+      unless-stopped
+    volumes:
+      - "./data:/var/lib/mysql"
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    #network_mode: bridge
+
+
+# networks:
+#   outside:
+#     external:
+#       true
+#     name:
+#       bridge

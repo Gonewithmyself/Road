@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  jenkins:
+    container_name:
+      jenkins
+    image:
+      jenkins
+    restart:
+      unless-stopped
+    volumes:
+      - "/home/john/docker/ins/jenkins/data:/var/jenkins_home"
+    network_mode: bridge
+
+
+# networks:
+#   outside:
+#     external:
+#       true
+#     name:
+#       bridge

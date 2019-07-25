@@ -1,0 +1,13 @@
+version: "3"
+services:
+  gitlab:
+    container_name:
+      gitlab
+    image:
+      gitlab/gitlab-ce
+    restart:
+      unless-stopped
+    volumes:
+      - "/home/john/docker/ins/gitlab/logs:/var/log/gitlab"
+      - "/home/john/docker/ins/gitlab/config:/etc/gitlab"
+      - "/home/john/docker/ins/gitlab/data:/var/opt/gitlab"
