@@ -1,14 +1,13 @@
 version: "3.7"
 services:
-  jenkins:
-    container_name:
-      jenkins
-    image:
-      jenkins
-    restart:
-      unless-stopped
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
     volumes:
-      - "/home/john/docker/ins/jenkins/data:/var/jenkins_home"
+      - "./data:/data"
+    restart: unless-stopped
     network_mode: bridge
 
 

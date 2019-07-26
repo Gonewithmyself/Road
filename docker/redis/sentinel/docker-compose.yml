@@ -1,0 +1,70 @@
+version: "3"
+services:
+  redis_m:
+    container_name: redis_m
+    image: redis
+    volumes:
+      - "./master:/data"
+    restart: unless-stopped
+
+  redis_s1:
+    container_name: redis_s1
+    image: redis
+    volumes:
+      - "./slave1:/data"
+    restart: unless-stopped
+    command: redis-server --slaveof redis_m 6379
+    depends_on:
+      - redis_m
+
+  redis_s2:
+    container_name: redis_s2
+    image: redis
+    volumes:
+      - "./slave2:/data"
+    restart: unless-stopped
+    command: redis-server --slaveof redis_m 6379
+    depends_on:
+      - redis_m
+
+  sentinel1:
+    image: redis
+    container_name: sentinel1
+    restart: unless-stopped
+    command: redis-sentinel /data/sentinel.conf
+    ports:
+      - 26379:26379
+    volumes:
+      - ./sentinel1:/data
+    depends_on:
+      - redis_m
+
+  sentinel2:
+    image: redis
+    container_name: sentinel2
+    restart: unless-stopped
+    command: redis-sentinel /data/sentinel.conf
+    ports:
+      - 26380:26379
+    volumes:
+      - ./sentinel2:/data
+    depends_on:
+      - redis_m
+
+  sentinel3:
+    image: redis
+    container_name: sentinel3
+    restart: unless-stopped
+    command: redis-sentinel /data/sentinel.conf
+    ports:
+      - 26381:26379
+    volumes:
+      - ./sentinel3:/data
+    depends_on:
+      - redis_m
+# networks:
+#   outside:
+#     external:
+#       true
+#     name:
+#       bridge
