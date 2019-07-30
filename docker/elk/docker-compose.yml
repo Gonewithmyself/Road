@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  es:
+    image: elasticsearch:7.2.0
+    restart: unless-stopped
+    volumes:
+      - "./es/data:/usr/share/elasticsearch/data"
+    ports:
+      - "9200:9200"
+    container_name: es
+    environment:
+      discovery.type: single-node
+
+  logstash:
+    image: logstash:7.2.0
+    volumes:
+      - "./logstash/logstash.conf:/usr/share/logstash/config/logstash.conf"
+      - "./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml"
+      - "./logstash/input.txt:/data/input.txt"
+    restart: unless-stopped
+    ports:
+      - "4560:4560"
+    depends_on:
+      - es
+    container_name: logstash
+
+
+  kibana:
+    image: kibana:7.2.0
+    restart: unless-stopped
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://es:9200
+    depends_on:
+      - es
+    container_name: kibana
