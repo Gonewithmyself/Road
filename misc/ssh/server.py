@@ -42,6 +42,8 @@ if __name__ == "__main__":
     send()
 
 #####
+# nc -l 9999 > xxx.file
+# nc localhost 9999 < xxx.file
 # ssh -CqtnNf
 #   ssh -L 7001:localhost:9999  sshhost
 #   listen local 7001 port, data send to 7001, will transefer to sshhost 9999 via ssh turnnel
