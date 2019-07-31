@@ -1,3 +1,4 @@
 gameclient
 .vscode
 *.pyc
+*.rdb
