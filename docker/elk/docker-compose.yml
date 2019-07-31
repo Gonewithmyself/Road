@@ -15,9 +15,7 @@ services:
   logstash:
     image: logstash:7.2.0
     volumes:
-      - "./logstash/logstash.conf:/usr/share/logstash/config/logstash.conf"
-      - "./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml"
-      - "./logstash/input.txt:/data/input.txt"
+      - "./logstash:/usr/share/logstash/config"
     restart: unless-stopped
     ports:
       - "4560:4560"
