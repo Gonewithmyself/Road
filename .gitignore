@@ -2,3 +2,4 @@ gameclient
 .vscode
 *.pyc
 *.rdb
+docker/elk/es/data
