@@ -11,6 +11,12 @@ import (
 	"github.com/globalsign/mgo"
 )
 
+/*
+db.getProfilingStatus()
+db.system.profile.find()
+db.stats(1024)
+*/
+
 // -buildmode=c-shared
 // -buildmode=c-archive
 var gMgoSession *mgo.Session
