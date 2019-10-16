@@ -3,3 +3,5 @@ gameclient
 *.pyc
 *.rdb
 docker/elk/es/data
+app
+*.db
