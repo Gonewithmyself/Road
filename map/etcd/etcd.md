@@ -76,3 +76,79 @@ type node struct {
 firstIndex、lastIndex针对所有ents(包括storage和unstable)
 
 unstable中snapshot只有follower从leader接受快照时才存在，snapshot和ents不会共存
+
+
+
+# 存储
+
+### WAL
+
+独立的goroutine提前预分配文件，通过fallocate系统调用预分配默认64M大小的文件。
+
+文件中的内容与网络包格式类似，header存放包体长度（64bit 高8位存放padding字节，低56位才是真实包长）。
+
+每个文件第一帧均为metadata类型
+
+写入时，将长度和包体写入buf，再写入文件，接着调用fsync刷入磁盘
+
+### ApplierV3
+
+使用boltDB作为存储层，key存的是版本，value详细信息
+
+在内存中用B树维护treeIndex，保存reversion到keyIndex的映射
+
+keyIndex中维护key的创建版本，最后修改版本，以及多个从创建到删除的轮回（generations）
+
+操作boltDB中间有一层缓存bucketBuffer，提升读取效率
+
+### watcher
+
+分为两组，一组是已经追上当前版本、另一组未追上。
+
+根据加入时版本号与当前版本号比较
+
+- ​	加入synced(写事务提交时，根据changes进行通知)
+- ​    加入unsynced（从boltdb取出minRev到curRev+1的所有reversions，转换成events进行通知）
+
+
+
+### lessor
+
+持久化到lease bucket的只有 lease的ID、ttl、remain ttl。
+
+promote中根据remain ttl设置expiry
+
+revokeExpiredLeases 找出过期lease，通过expiredC通知上层
+
+checkpointScheduledLeases 找出未过期，但到了checkpointInterval的lease，更新remain ttl并写入raftlog
+
+
+
+```
+	leaseMap             map[LeaseID]*Lease	// id => lease 
+	leaseExpiredNotifier *LeaseExpiredNotifier	//  定期检测过期lease
+	leaseCheckpointHeap  LeaseQueue	// 定期更新remain ttl
+	itemMap              map[LeaseItem]LeaseID // key ==> leaseID
+```
+
+
+
+# 网络层
+
+监听两个端口（2379用于客户端用户通信、2380内部节点通信）
+
+节点间通信使用stream、pipeline两种通道
+
+前者使用长连接用于常规消息，pipeline使用短连接用于传输快照数据
+
+### http
+
+serveHttp 中接收对端连接，传入streamWriter用于写入消息
+
+streamReader中dial对端连接，接收对端消息
+
+​	
+
+### gRPC-gateway
+
+使用cmux复用同一个端口，同时gRPC和HTTP服务
