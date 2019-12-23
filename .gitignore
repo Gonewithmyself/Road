@@ -6,4 +6,5 @@ docker/elk/es/data
 docker/kafka/*
 !docker/kafka/.docker.compose.yml
 app
+*.so
 *.db
