@@ -34,7 +34,7 @@ services:
     depends_on:
       - prometheus
     ports:
-      - 3000:3000
+      - 3200:3000
     volumes:
       - ./grafana/data:/var/lib/grafana
     restart: unless-stopped

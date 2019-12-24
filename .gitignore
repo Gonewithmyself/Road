@@ -2,9 +2,8 @@ gameclient
 .vscode
 *.pyc
 *.rdb
-docker/elk/es/data
-docker/kafka/*
-!docker/kafka/.docker.compose.yml
+docker/*
+!docker/*.yml
 app
 *.so
 *.db
