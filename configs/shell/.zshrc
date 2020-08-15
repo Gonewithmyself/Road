@@ -2,12 +2,12 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/mac/.oh-my-zsh"
+export ZSH="/root/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 #ZSH_THEME="robbyrussell"
 ZSH_THEME="miloshadzic"
 
@@ -71,12 +71,13 @@ ZSH_THEME="miloshadzic"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
 	autojump
-	git
-	zsh-autosuggestions
+    git
+    zsh-autosuggestions
 	zsh-syntax-highlighting
 	docker
 	docker-compose
-)
+    kubectl
+    )
 
 source $ZSH/oh-my-zsh.sh
 
@@ -108,9 +109,7 @@ source $ZSH/oh-my-zsh.sh
 alias proxy='export all_proxy=vmess://127.0.0.1:1087'
 alias unproxy='unset all_proxy'
 alias dcp='docker-compose'
-proxy
-export PATH=$PATH:/Users/mac/go/bin
-export GOPATH="/Users/mac/go"
+
 
 
 export ETCDCTL_API=3
