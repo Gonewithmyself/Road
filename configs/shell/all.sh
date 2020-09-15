@@ -2,16 +2,16 @@
 
 # apt source list
 mv /etc/apt/source.list /etc/apt/source.list.bak
-echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted" >> /etc/apt/source.list
-echo "deb http://mirrors.aliyun.com/ubuntu/ bionic universe" >> /etc/apt/source.list
-echo "deb http://mirrors.aliyun.com/ubuntu/ bionic multiverse" >> /etc/apt/source.list
+echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted" >> /etc/apt/sources.list
+echo "deb http://mirrors.aliyun.com/ubuntu/ bionic universe" >> /etc/apt/sources.list
+echo "deb http://mirrors.aliyun.com/ubuntu/ bionic multiverse" >> /etc/apt/sources.list
 apt update
 
 
 # ssh
 apt install -y openssh-server
 mkdir -p /root/.ssh/
-echo '' >> /root/.ssh/authorized_keys
+echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGQ04uNjHJ5ZWRGDXj1Aq8sMT7INyrqV5fC2hQwZMHAGMzBFXhOuwIQFIyvcxgakv/8R/th9z3yD8M/h176NZYw3NHQ1pg35Xg4ZYgSxlN+AO1kFavW9Y2pU7l5DeMoFS6Rat+E11bOeiHeOY9hOStE/P01Vy4hJKq+Vom6shfZn3H6EyPf62z1jZdv5kA9tG5h1w9jCPkRQPLpfLVTnTLEgrs7UdL7wfuH9k2Z46ka/di2i0p1u1dx465iLd2teFEDy1/IsKd64i+U3F6FlpoNXVNF+BfJdp11b9wFYKHbfvu2hvMpNGYBuQ9ZmBEsMMGe1sYBO4PJ0z1BiROWmuZ guoqiang' >> /root/.ssh/authorized_keys
 service ssh restart
 
 
