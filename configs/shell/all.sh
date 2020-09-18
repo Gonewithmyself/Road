@@ -30,4 +30,4 @@ apt install -y "make" "build-essential" "htop" "dos2unix" "net-tools"
 
 # docker 
 apt install -y docker.io docker-compose
-echo '{"registry-mirrors":["https://reg-mirror.qiniu.com/"]}' >> /etc/docker/daemon.json
+echo '{"registry-mirrors":["http://hub-mirror.c.163.com"]}' >> /etc/docker/daemon.json
