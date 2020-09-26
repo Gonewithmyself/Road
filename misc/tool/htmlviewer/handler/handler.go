@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -11,13 +12,33 @@ import (
 
 func Home(ctx *gin.Context) {
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
-	ctx.String(200, render("home", []string{"test", "go"}))
+
+	var list []string
+	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() || filepath.Ext(path) != ".html" {
+			return nil
+		}
+		fname := info.Name()
+		list = append(list, fname)
+		return nil
+	})
+	ctx.String(200, render("home", list))
 }
 
 func Content(ctx *gin.Context) {
 	pd := ctx.Param("file")
 	id := ctx.Query("id")
-	ctx.String(200, pd+"__"+id)
+	_ = id
+
+	f, err := os.OpenFile(pd, os.O_RDONLY, 0666)
+	if err != nil {
+		ctx.String(400, "%v not found", pd)
+		return
+	}
+
+	data, _ := ioutil.ReadAll(f)
+	ctx.Header("Content-Type", "text/html; charset=utf-8")
+	ctx.String(200, string(data))
 }
 
 type file struct {
