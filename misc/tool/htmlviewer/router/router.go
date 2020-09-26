@@ -49,7 +49,7 @@ func (server *HttpServer) Start() {
 		Handler: r,
 	}
 
-	log.Println("server start")
+	log.Println("server start ", server.addr)
 	err := server.s.ListenAndServe()
 	if err != nil {
 		panic(err)

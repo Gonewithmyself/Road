@@ -31,7 +31,7 @@ const (
 					<div data-v-0c10c649="" class="table-item-wrap">
 						<div data-v-0c10c649="" class="table-item">
 						  <div data-v-0c10c649="" class="table-item-text">
-							<div data-v-0c10c649="" class="table-item-text-subtitle" id={{$idx}}>{{$ele}}</div></div>
+							<div data-v-0c10c649="" class="table-item-text-subtitle" id="{{$ele.Class}}" fpath="{{$ele.Path}}"  >{{$ele.Name}}</div></div>
 						  <div data-v-0c10c649="" class="table-item-right">
 							<i data-v-0c10c649="" class="iconfont lock"></i></div>
 						</div>
@@ -57,10 +57,12 @@ const (
 			function handleClick(e){
 				var obj = $(this)
 				, id = obj.attr("id")
+				, fpath = obj.attr("fpath")
 				, name = obj.text()
 				, url = window.location.href + '?id=' + id;
 				// console.log(name)
-				window.location.href = "/content/" + name + '?id=' + id;
+				url = "/content/" + name + '?id=' + id + '&?fpath=' + fpath;
+				window.location.href = url
 			}
 			</script>
 	</html>

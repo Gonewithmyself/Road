@@ -13,24 +13,32 @@ import (
 func Home(ctx *gin.Context) {
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
 
-	var list []string
-	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() || filepath.Ext(path) != ".html" {
-			return nil
-		}
-		fname := info.Name()
-		list = append(list, fname)
-		return nil
-	})
-	ctx.String(200, render("home", list))
+	// var list []string
+	// filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+	// 	if info.IsDir() {
+	// 		return nil
+	// 	}
+	// 	fname := info.Name()
+	// 	list = append(list, fname)
+	// 	log.Println(filepath.Dir(path), fname)
+	// 	return nil
+	// })
+	ctx.String(200, render("home", m["."]))
 }
 
 func Content(ctx *gin.Context) {
 	pd := ctx.Param("file")
-	id := ctx.Query("id")
-	_ = id
+	class := ctx.Query("id")
+	// fpath := ctx.Query("fpath")
+	// log.Println(class, " --- ", fpath)
 
-	f, err := os.OpenFile(pd, os.O_RDONLY, 0666)
+	if class == "dir" {
+		ctx.Header("Content-Type", "text/html; charset=utf-8")
+		ctx.String(200, render("home", m[pd]))
+		return
+	}
+
+	f, err := os.OpenFile(fm[pd], os.O_RDONLY, 0666)
 	if err != nil {
 		ctx.String(400, "%v not found", pd)
 		return
@@ -44,25 +52,38 @@ func Content(ctx *gin.Context) {
 type file struct {
 	Name  string
 	Class string
+	Path  string
 }
 
 var m = map[string][]*file{}
+var fm = map[string]string{}
 
 func listDir() {
 	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 		f := &file{
 			Name: info.Name(),
+			Path: filepath.Dir(path),
 		}
 
 		if info.IsDir() {
+			if f.Path != "." || f.Name == "." {
+				return nil
+			}
 			f.Class = "dir"
+		} else if filepath.Ext(f.Name) != ".html" {
+			return nil
 		}
 
-		ff, _ := m[""]
+		ff, _ := m[f.Path]
 		ff = append(ff, f)
-		m[""] = ff
+		m[f.Path] = ff
+		fm[f.Name] = f.Path + "/" + f.Name
 		return nil
 	})
+}
+
+func init() {
+	listDir()
 }
 
 func render(tpl string, data interface{}) string {
