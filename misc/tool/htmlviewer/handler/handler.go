@@ -2,6 +2,8 @@ package handler
 
 import (
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +17,31 @@ func Home(ctx *gin.Context) {
 func Content(ctx *gin.Context) {
 	pd := ctx.Param("file")
 	id := ctx.Query("id")
-	ctx.String(300, pd+"__"+id)
+	ctx.String(200, pd+"__"+id)
+}
+
+type file struct {
+	Name  string
+	Class string
+}
+
+var m = map[string][]*file{}
+
+func listDir() {
+	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+		f := &file{
+			Name: info.Name(),
+		}
+
+		if info.IsDir() {
+			f.Class = "dir"
+		}
+
+		ff, _ := m[""]
+		ff = append(ff, f)
+		m[""] = ff
+		return nil
+	})
 }
 
 func render(tpl string, data interface{}) string {
