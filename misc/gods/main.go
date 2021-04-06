@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/Gonewithmyself/gomod"
 	"github.com/emirpasic/gods/trees/btree"
 )
 
@@ -17,6 +18,7 @@ func main() {
 	tree.Put(5, "e") // 1->a, 2->b, 3->c, 4->d, 5->e (in order)
 	tree.Put(6, "f") // 1->a, 2->b, 3->c, 4->d, 5->e, 6->f (in order)
 	tree.Put(7, "g") // 1->a, 2->b, 3->c, 4->d, 5->e, 6->f, 7->g (in order)
+	gomod.Greeting()
 
 	fmt.Println(tree)
 }
