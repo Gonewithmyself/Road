@@ -1,7 +1,6 @@
 package tree
 
 import (
-	"container/list"
 	"fmt"
 	"math/rand"
 	"time"
@@ -19,51 +18,78 @@ type (
 )
 
 func (t *Tree) print() {
-	if t.Root == nil {
+	t.doPrint(t.Root, 0, 0)
+	/*
+		if t.Root == nil {
+			return
+		}
+		type level struct {
+			*Node
+			lv int
+		}
+
+		newlvNode := func(n *Node, lv int) *level {
+			return &level{
+				Node: n,
+				lv:   lv,
+			}
+		}
+		q := list.New()
+		curlv := 1
+		q.PushBack(newlvNode(t.Root, 1))
+
+		for q.Len() != 0 {
+			e := q.Front()
+			node := e.Value.(*level)
+			lv := node.lv
+			if lv != curlv {
+				curlv = lv
+				fmt.Printf("\n")
+			}
+
+			if node.left != nil {
+				q.PushBack(newlvNode(node.left, lv+1))
+				fmt.Printf("/")
+			} else {
+				fmt.Printf(" ")
+			}
+			fmt.Printf("%v", node.Data)
+
+			if node.right != nil {
+				q.PushBack(newlvNode(node.right, lv+1))
+				fmt.Printf("\\ ")
+			} else {
+				fmt.Printf("  ")
+			}
+			q.Remove(e)
+		}
+
+		fmt.Println()
+	*/
+}
+
+func (t *Tree) doPrint(node *Node, typ, lv int) {
+	if node == nil {
 		return
 	}
-	type level struct {
-		*Node
-		lv int
+
+	t.doPrint(node.right, 2, lv+1)
+	switch typ {
+	case 0:
+		fmt.Printf("%2d\n", node.Data)
+	case 1:
+		for i := 0; i < lv; i++ {
+			fmt.Printf("\t")
+		}
+		fmt.Printf("\\ %2d\n", node.Data)
+	case 2:
+		for i := 0; i < lv; i++ {
+			fmt.Printf("\t")
+		}
+		fmt.Printf("/ %2d\n", node.Data)
+
 	}
-
-	newlvNode := func(n *Node, lv int) *level {
-		return &level{
-			Node: n,
-			lv:   lv,
-		}
-	}
-	q := list.New()
-	curlv := 1
-	q.PushBack(newlvNode(t.Root, 1))
-
-	for q.Len() != 0 {
-		e := q.Front()
-		node := e.Value.(*level)
-		lv := node.lv
-		if lv != curlv {
-			curlv = lv
-			fmt.Printf("\n")
-		}
-
-		if node.left != nil {
-			q.PushBack(newlvNode(node.left, lv+1))
-			fmt.Printf("/")
-		} else {
-			fmt.Printf(" ")
-		}
-		fmt.Printf("%v", node.Data)
-
-		if node.right != nil {
-			q.PushBack(newlvNode(node.right, lv+1))
-			fmt.Printf("\\ ")
-		} else {
-			fmt.Printf("  ")
-		}
-		q.Remove(e)
-	}
-
-	fmt.Println()
+	t.doPrint(node.left, 1, lv+1)
 }
 
 func (t *Tree) push(data int) {

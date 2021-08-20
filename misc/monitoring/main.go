@@ -1,10 +1,8 @@
 package main
 
 import (
+	"context"
 	"flag"
-	"log"
-	"math"
-	"math/rand"
 	"net/http"
 	"time"
 
@@ -30,7 +28,7 @@ var (
 			Help:       "RPC latency distributions.",
 			Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
 		},
-		[]string{"service"},
+		[]string{"service", "version"},
 	)
 	// The same as above, but now as a histogram, and only for the normal
 	// distribution. The buckets are targeted to the parameters of the
@@ -41,6 +39,10 @@ var (
 		Help:    "RPC latency distributions.",
 		Buckets: prometheus.LinearBuckets(*normMean-5**normDomain, .5**normDomain, 20),
 	})
+
+	counter = prometheus.NewCounter(prometheus.CounterOpts{})
+	cv      = prometheus.NewCounterVec(prometheus.CounterOpts{}, []string{"123"})
+	gauge   = prometheus.NewGauge(prometheus.GaugeOpts{})
 )
 
 func init() {
@@ -48,45 +50,59 @@ func init() {
 	prometheus.MustRegister(rpcDurations)
 	prometheus.MustRegister(rpcDurationsHistogram)
 	// Add Go module build info.
-	prometheus.MustRegister(prometheus.NewBuildInfoCollector())
+	// prometheus.MustRegister(prometheus.NewBuildInfoCollector())
+
 }
 
 func main() {
 	flag.Parse()
 
-	start := time.Now()
+	// start := time.Now()
 
-	oscillationFactor := func() float64 {
-		return 2 + math.Sin(math.Sin(2*math.Pi*float64(time.Since(start))/float64(*oscillationPeriod)))
-	}
+	// oscillationFactor := func() float64 {
+	// 	return 2 + math.Sin(math.Sin(2*math.Pi*float64(time.Since(start))/float64(*oscillationPeriod)))
+	// }
 
 	// Periodically record some sample latencies for the three services.
 	go func() {
 		for {
-			v := rand.Float64() * *uniformDomain
-			rpcDurations.WithLabelValues("uniform").Observe(v)
-			time.Sleep(time.Duration(100*oscillationFactor()) * time.Millisecond)
+			// v := rand.Float64() * *uniformDomain
+			// rpcDurations.WithLabelValues("uniform", "1").Observe(v)
+			// time.Sleep(time.Duration(100*oscillationFactor()) * time.Millisecond)
 		}
 	}()
 
 	go func() {
 		for {
-			v := (rand.NormFloat64() * *normDomain) + *normMean
-			rpcDurations.WithLabelValues("normal").Observe(v)
-			rpcDurationsHistogram.Observe(v)
-			time.Sleep(time.Duration(75*oscillationFactor()) * time.Millisecond)
+			// v := (rand.NormFloat64() * *normDomain) + *normMean
+			// rpcDurations.WithLabelValues("normal", "2").Observe(v)
+			// rpcDurationsHistogram.Observe(v)
+			// time.Sleep(time.Duration(75*oscillationFactor()) * time.Millisecond)
 		}
 	}()
 
 	go func() {
 		for {
-			v := rand.ExpFloat64() / 1e6
-			rpcDurations.WithLabelValues("exponential").Observe(v)
-			time.Sleep(time.Duration(50*oscillationFactor()) * time.Millisecond)
+			// v := rand.ExpFloat64() / 1e6
+			// rpcDurations.WithLabelValues("exponential", "2").Observe(v)
+			// time.Sleep(time.Duration(50*oscillationFactor()) * time.Millisecond)
 		}
 	}()
 
 	// Expose the registered metrics via HTTP.
-	http.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(*addr, nil))
+
+	s := http.Server{
+		Addr: *addr,
+	}
+	mux := http.NewServeMux()
+	mux.Handle("/metrics", promhttp.Handler())
+	s.Handler = mux
+
+	go func() {
+		time.Sleep(time.Second * 10)
+		s.Shutdown(context.Background())
+	}()
+	s.ListenAndServe()
+
+	// log.Fatal(http.ListenAndServe(*addr, nil))
 }

@@ -20,3 +20,15 @@ scrape_configs:
       - targets: ['192.168.72.90:8080']
         labels:
           instance: app
+
+  - job_name: biserver
+    static_configs:
+      - targets: ['192.168.99.1:9999']
+        labels:
+          instance: biserver
+  - job_name: hallserver
+    metrics_path: 'metric'
+    static_configs:
+      - targets: ['192.168.99.1:9919']
+        labels:
+          instance: hallserver

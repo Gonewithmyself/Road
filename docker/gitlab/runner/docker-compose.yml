@@ -1,0 +1,23 @@
+version: '3.1'
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner
+    restart: unless-stopped
+    container_name: gitlab-runner
+    privileged: true
+    volumes:
+      - /home/john/docker/ins/gitlabrunner/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+  gitlab-runner2:
+    image: gitlab/gitlab-runner
+    restart: unless-stopped
+    container_name: gitlab-runner2
+    privileged: true
+    volumes:
+      - /home/john/docker/ins/gitlabrunner/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks: 
+  default:
+    external: 
+      name: gitlab_default

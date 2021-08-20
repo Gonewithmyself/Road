@@ -13,8 +13,8 @@ require (
 	github.com/micro/go-micro v1.18.0 // indirect
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins v1.5.1 // indirect
-	github.com/micro/go-plugins/server/http/v2 v2.9.1 // indirect
-	github.com/micro/go-plugins/transport/tcp/v2 v2.9.1 // indirect
+	github.com/micro/go-plugins/server/http/v2 v2.9.1
+	github.com/micro/go-plugins/transport/tcp/v2 v2.9.1
 	// github.com/micro/go-plugins/transport/tcp/v2 v2.4.0 // indirect
 	github.com/micro/mdns v0.3.0 // indirect
 	google.golang.org/protobuf v1.23.0

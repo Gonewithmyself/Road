@@ -7,6 +7,8 @@ services:
       gitlab/gitlab-ce
     restart:
       unless-stopped
+    ports:
+      - 8880:80
     volumes:
       - "/home/john/docker/ins/gitlab/logs:/var/log/gitlab"
       - "/home/john/docker/ins/gitlab/config:/etc/gitlab"

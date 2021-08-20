@@ -16,7 +16,7 @@ var etcdReg registry.Registry
 
 func init() {
 	etcdReg = etcd.NewRegistry(
-		registry.Addrs("127.0.0.1:23791"),
+		registry.Addrs("192.168.99.103:23791", "192.168.99.103:23792"),
 	)
 
 }
@@ -49,10 +49,10 @@ func main() {
 	// Initialise service
 	service.Init()
 
-	// // Register Handler
+	// Register Handler
 	// hello.RegisterHelloHandler(service.Server(), new(handler.Hello))
 
-	// // Register Struct as Subscriber
+	// Register Struct as Subscriber
 	// micro.RegisterSubscriber("com.foo.service.hello", service.Server(), new(subscriber.Hello))
 
 	// Run service
