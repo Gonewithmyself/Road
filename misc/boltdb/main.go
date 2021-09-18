@@ -27,6 +27,7 @@ func main() {
 		return nil
 	})
 
+	fmt.Println(db)
 	db.View(func(tx *bolt.Tx) error {
 		bk := tx.Bucket([]byte("test"))
 		fmt.Println(string(bk.Get([]byte("python"))))
