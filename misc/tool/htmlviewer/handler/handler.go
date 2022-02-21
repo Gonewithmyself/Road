@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"bytes"
+	"compress/gzip"
 	"io/ioutil"
 	"log"
 	"os"
@@ -26,6 +28,8 @@ func Home(ctx *gin.Context) {
 	ctx.String(200, render("home", m["."]))
 }
 
+var cache = map[string][]byte{}
+
 func Content(ctx *gin.Context) {
 	pd := ctx.Param("file")
 	class := ctx.Query("id")
@@ -38,15 +42,26 @@ func Content(ctx *gin.Context) {
 		return
 	}
 
-	f, err := os.OpenFile(fm[pd], os.O_RDONLY, 0666)
-	if err != nil {
-		ctx.String(400, "%v not found", pd)
-		return
+	data, ok := cache[pd]
+	if !ok {
+		f, err := os.OpenFile(fm[pd], os.O_RDONLY, 0666)
+		if err != nil {
+			ctx.String(400, "%v not found", pd)
+			return
+		}
+		data, _ = ioutil.ReadAll(f)
+		var buf bytes.Buffer
+		zip, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
+		n, er := zip.Write(data)
+		data = buf.Bytes()
+		cache[pd] = data
+		log.Printf("load %v n(%v) er(%v)\n", pd, n, er)
 	}
 
-	data, _ := ioutil.ReadAll(f)
 	ctx.Header("Content-Type", "text/html; charset=utf-8")
+	ctx.Header("Content-Encoding", "gzip")
 	ctx.String(200, string(data))
+	log.Printf("serve %v len(%v)\n", pd, len(data))
 }
 
 type file struct {
