@@ -1,0 +1,2 @@
+[url "git@gitlab.ilongyuan.cn:gsp"]
+    insteadof = https://gitlab.ilongyuan.cn/gsp

@@ -14,6 +14,29 @@ func (t Tree) preOrder(node *Node) {
 	t.preOrder(node.right)
 }
 
+func (t Tree) bfsOrder() {
+	q := list.New()
+
+	q.PushBack(t.Root)
+	for q.Len() != 0 {
+		e := q.Front()
+		if e == nil {
+			continue
+		}
+		q.Remove(e)
+		node := e.Value.(*Node)
+
+		fmt.Print(node.Data, " ")
+		if node.left != nil {
+			q.PushBack(node.left)
+		}
+		if node.right != nil {
+			q.PushBack(node.right)
+		}
+	}
+	fmt.Println()
+}
+
 func (t Tree) preOrderIter() {
 	if t.Root == nil {
 		return
@@ -37,6 +60,23 @@ func (t Tree) preOrderIter() {
 	}
 
 	fmt.Println()
+}
+
+func (tr *Tree) preorderWithDivide() []int {
+	return divideAndConquer(tr.Root)
+}
+func divideAndConquer(root *Node) []int {
+	if root == nil {
+		return nil
+	}
+
+	left := divideAndConquer(root.left)
+	right := divideAndConquer(root.right)
+
+	result := []int{root.Data}
+	result = append(result, left...)
+	result = append(result, right...)
+	return result
 }
 
 func (t Tree) inOrder(node *Node) {
